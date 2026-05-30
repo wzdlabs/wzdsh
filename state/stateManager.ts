@@ -99,10 +99,6 @@ export async function saveVenture(venture: Venture): Promise<void> {
   if (!result.success) {
     throw new Error(`Invalid venture update\n${formatZodError(result.error)}`);
   }
-  const blocked = await missingGateFieldsForTarget(result.data, result.data.phase);
-  if (blocked.length > 0) {
-    throw new Error(`Cannot advance to ${result.data.phase}. Missing ${blocked.join(", ")}`);
-  }
   result.data.gate_status = computeGateStatus(result.data);
   await writeJSON(businessPath(result.data.slug, "venture.json"), result.data);
 }
