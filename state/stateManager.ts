@@ -295,9 +295,18 @@ async function acquireLock(slug: string): Promise<void> {
   await Bun.$`mkdir -p ${businessPath(slug)}`.quiet();
   const path = businessPath(slug, ".lock");
   const existing = await readJSON<{ pid: number; created_at: string }>(path);
-  const age = Date.now() - Date.parse(String(existing.created_at ?? 0));
-  if (existing.pid && existing.pid !== process.pid && age < 12 * 60 * 60 * 1000) {
-    throw new Error(`Another WZD session is open for ${slug}. Clear ${path} if that session is gone.`);
+  if (existing.pid && existing.pid !== process.pid) {
+    let alive = false;
+    try {
+      process.kill(existing.pid, 0);
+      alive = true;
+    } catch {
+      alive = false;
+    }
+    if (alive) {
+      throw new Error(`Another WZD session is open for ${slug}. Clear ${path} if that session is gone.`);
+    }
+    await Bun.file(path).delete();
   }
   await writeJSON(path, { pid: process.pid, created_at: new Date().toISOString() });
   activeLockSlug = slug;

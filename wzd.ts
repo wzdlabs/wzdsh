@@ -21,7 +21,10 @@ import {
   writeTasks,
 } from "./state/stateManager";
 import { loadAuthSession, signIn, signOut } from "./utils/auth";
-import { gateWarning, header, metricsBlock, phaseLabel, promptLabel } from "./utils/format";
+import { gateWarning, header, metricsBlock, phaseLabel, promptLabel, tokenLine } from "./utils/format";
+import { getSessionTokens, getModel, setModel, getContextWindow } from "./utils/stream";
+import { interactiveModelSelect } from "./utils/modelSelect";
+import { loadModelConfig, saveModelConfig } from "./utils/config";
 import { readMarkdown } from "./utils/files";
 import { runSessionClose } from "./utils/sessionClose";
 
@@ -55,6 +58,8 @@ process.on("SIGINT", () => {
 await main();
 
 async function main(): Promise<void> {
+  const savedModel = await loadModelConfig();
+  if (savedModel) setModel(savedModel);
   const auth = await loadAuthSession();
   output.write(`${header(undefined, auth.signed_in ? `Signed in ${auth.email}` : "Signed out")}\n`);
   active = await chooseInitialBusiness();
@@ -96,6 +101,14 @@ async function routeCommand(line: string): Promise<void> {
   const [command, ...restParts] = line.split(" ");
   const rest = restParts.join(" ").trim();
   if (command === "/help") return printHelp();
+  if (command === "/tokens") return printTokens();
+  if (command === "/model") {
+    if (!rest) return await interactiveModelSelect(ask, (s) => output.write(s));
+    setModel(rest);
+    await saveModelConfig(getModel());
+    output.write(`Model set to ${getModel()}\n`);
+    return;
+  }
   if (command === "/close") return await runSessionClose(active, ask);
   if (command === "/signin") return await handleSignIn();
   if (command === "/signout") return await handleSignOut();
@@ -222,6 +235,11 @@ async function printMetrics(): Promise<void> {
   output.write(`${metricsBlock(await loadMetrics(active.slug))}\n`);
 }
 
+function printTokens(): void {
+  const { prompt, completion, total } = getSessionTokens();
+  output.write(`${tokenLine(prompt, completion, total, getContextWindow())}\n`);
+}
+
 async function handleSignIn(): Promise<void> {
   const email = await requireAnswer("Email: ");
   const name = await requireAnswer("Name: ");
@@ -255,6 +273,8 @@ function printHelp(): void {
       "/decisions",
       "/tasks",
       "/metrics",
+      "/tokens",
+      "/model [provider:model]",
       "/switch",
       "/new",
       "/signin",

@@ -2,6 +2,8 @@ node_modules
 dist
 tmp
 .DS_Store
+.env
+.wzdconfig.json
 businesses/.auth.json
 businesses/*
 !businesses/.gitkeep

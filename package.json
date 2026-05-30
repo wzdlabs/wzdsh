@@ -12,6 +12,7 @@
     "test": "bun test"
   },
   "dependencies": {
+    "@anthropic-ai/sdk": "^0.100.1",
     "chalk": "latest",
     "openai": "latest",
     "zod": "latest"

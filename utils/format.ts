@@ -28,6 +28,19 @@ export function sessionCloseHeader(): string {
   return chalk.white.bold("SESSION CLOSE");
 }
 
+export function tokenLine(prompt: number, completion: number, sessionTotal: number, contextWindow = 128_000): string {
+  const BAR_WIDTH = 10;
+  const pct = Math.min((prompt / contextWindow) * 100, 100);
+  const filled = Math.min(Math.round((pct / 100) * BAR_WIDTH), BAR_WIDTH);
+  const bar = `[${"█".repeat(filled)}${"░".repeat(BAR_WIDTH - filled)}]`;
+  const callTotal = prompt + completion;
+  const usedLabel = `${pct.toFixed(1)}% ctx`;
+  const leftLabel = `${(100 - pct).toFixed(1)}% left`;
+  return chalk.dim(
+    `↑${prompt.toLocaleString()} ↓${completion.toLocaleString()} = ${callTotal.toLocaleString()}  session ${sessionTotal.toLocaleString()} ${bar} ${usedLabel} · ${leftLabel}`,
+  );
+}
+
 export function metricsBlock(metrics: Metrics): string {
   return chalk.white(
     [
