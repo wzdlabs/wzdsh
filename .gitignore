@@ -1,4 +1,8 @@
 node_modules
 dist
+tmp
 .DS_Store
 businesses/.auth.json
+businesses/*
+!businesses/.gitkeep
+.vercel
