@@ -3,7 +3,8 @@
 // Usage: bun run-agent.ts <agent> <slug> <message> [history-json]
 import type { AgentName, Message } from "./types";
 import { loadVenture, clearActiveLock } from "./state/stateManager";
-import { runAgent } from "./utils/stream";
+import { runAgent, setModel } from "./utils/stream";
+import { loadModelConfig } from "./utils/config";
 
 const [, , agent, slug, message, historyJson] = process.argv;
 
@@ -11,6 +12,9 @@ if (!agent || !slug || !message) {
   process.stderr.write("Usage: bun run-agent.ts <agent> <slug> <message> [history-json]\n");
   process.exit(1);
 }
+
+const savedModel = await loadModelConfig();
+if (savedModel) setModel(savedModel);
 
 const history: Message[] = historyJson ? (JSON.parse(historyJson) as Message[]) : [];
 const venture = await loadVenture(slug);
