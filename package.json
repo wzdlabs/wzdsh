@@ -1,0 +1,23 @@
+{
+  "name": "wzdsh",
+  "version": "0.1.0",
+  "type": "module",
+  "bin": {
+    "wzd": "./wzd.ts"
+  },
+  "scripts": {
+    "start": "bun wzd.ts",
+    "dev": "bun --watch wzd.ts",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test"
+  },
+  "dependencies": {
+    "chalk": "latest",
+    "openai": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "bun-types": "latest",
+    "typescript": "latest"
+  }
+}
