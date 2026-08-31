@@ -4,8 +4,8 @@
   "description": "A guided terminal tutor from Python beginner to job-ready backend developer.",
   "type": "module",
   "bin": {
-    "wzdsh": "./dist/cli.js",
-    "wzd": "./dist/cli.js"
+    "wzdsh": "dist/cli.js",
+    "wzd": "dist/cli.js"
   },
   "files": [
     "dist",
