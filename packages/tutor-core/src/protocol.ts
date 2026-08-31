@@ -74,6 +74,11 @@ export const TutorEventSchema = z.discriminatedUnion("type", [
     type: z.literal("tutor_message"),
     content: z.string(),
     suggestedActions: z.array(z.string()).default([]),
+    usage: z.object({
+      inputTokens: z.number().int().nonnegative(),
+      outputTokens: z.number().int().nonnegative(),
+      totalTokens: z.number().int().nonnegative(),
+    }).optional(),
   }),
   EventBaseSchema.extend({
     type: z.literal("progress_snapshot"),

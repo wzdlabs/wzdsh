@@ -19,6 +19,7 @@ export const ModelProfileSchema = z.object({
   displayName: z.string().min(1),
   source: z.enum(["local", "byok", "custom", "managed"]),
   transport: z.enum(["openai-compatible", "anthropic"]),
+  apiStyle: z.enum(["responses", "chat-completions"]).default("chat-completions"),
   model: z.string().min(1),
   baseUrl: z.string().url().optional(),
   credential: CredentialReferenceSchema,
@@ -78,6 +79,19 @@ export function upsertModelProfile(config: ModelProfileConfig, input: ModelProfi
 
 export function selectModelProfile(config: ModelProfileConfig, profileId: string): ModelProfileConfig {
   return ModelProfileConfigSchema.parse({ ...config, activeProfileId: profileId });
+}
+
+export function removeModelProfile(config: ModelProfileConfig, profileId: string): ModelProfileConfig {
+  const current = ModelProfileConfigSchema.parse(config);
+  const profiles = current.profiles.filter((profile) => profile.id !== profileId);
+  if (profiles.length === current.profiles.length) {
+    throw new Error(`Model profile does not exist: ${profileId}`);
+  }
+  return ModelProfileConfigSchema.parse({
+    ...current,
+    activeProfileId: current.activeProfileId === profileId ? profiles[0]?.id ?? null : current.activeProfileId,
+    profiles,
+  });
 }
 
 export interface SecretResolver {

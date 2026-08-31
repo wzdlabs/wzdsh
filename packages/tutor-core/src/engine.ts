@@ -126,6 +126,7 @@ export class TutorEngine {
         type: "tutor_message",
         content: reply.content,
         suggestedActions: reply.suggestedActions ?? [],
+        usage: reply.usage,
       });
       return;
     }
@@ -150,6 +151,7 @@ export class TutorEngine {
         type: "tutor_message",
         content: reply.content,
         suggestedActions: reply.suggestedActions ?? [],
+        usage: reply.usage,
       });
       return;
     }

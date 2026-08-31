@@ -1,7 +1,7 @@
 {
   "name": "wzdsh",
-  "version": "0.1.0",
-  "description": "A guided terminal tutor from Python beginner to job-ready backend developer.",
+  "version": "0.2.0",
+  "description": "An agentic terminal tutor from Python beginner to job-ready backend developer.",
   "type": "module",
   "bin": {
     "wzdsh": "dist/cli.js",

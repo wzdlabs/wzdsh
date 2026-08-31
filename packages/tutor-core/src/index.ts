@@ -1,6 +1,7 @@
 export * from "./catalog";
 export * from "./engine";
 export * from "./file-repository";
+export * from "./file-model-profile-repository";
 export * from "./forecast";
 export * from "./memory";
 export * from "./model-profiles";

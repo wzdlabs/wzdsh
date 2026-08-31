@@ -8,7 +8,7 @@ This document records the implementation boundary for WZD as a guided Python tut
 - Teach through a guided terminal experience with an agentic tutor.
 - Require assessment evidence before unlocking later competencies.
 - Estimate remaining active hours and calendar time from the learner's demonstrated pace.
-- Support local models, bring-your-own API keys, custom OpenAI-compatible endpoints, and a future managed model.
+- Support OpenRouter, direct OpenAI access, custom OpenAI-compatible endpoints, and a future managed model.
 - Keep the learning engine reusable by a future Tauri desktop app.
 
 ## Boundary
@@ -34,12 +34,15 @@ The core never reads stdin, writes stdout, uses ANSI formatting, or calls a WebV
 
 ## Model profiles and secrets
 
-Model profiles support four sources: local, bring-your-own-key, custom endpoint, and future managed access. A profile contains the provider transport, model name, endpoint, and a credential reference. It must never contain a raw key.
+Model profiles separate the provider transport, API style, model name, endpoint, and credential reference. They must never contain a raw key.
 
-- The CLI can resolve an environment-variable reference.
-- A future Tauri adapter can resolve a keychain reference through the operating system.
-- Local OpenAI-compatible servers such as Ollama can use a local URL with no credential.
+- OpenRouter uses its OpenAI-compatible chat-completions endpoint and model catalog.
+- Direct OpenAI profiles use the Responses API with `store: false`.
+- The macOS CLI stores BYOK secrets in Keychain and can resolve environment-variable references on other systems.
+- Custom endpoints can use Responses or chat-completions semantics, with keychain, environment, or no credential.
 - Managed access is represented separately so subscription credentials do not leak into learner data.
+
+The runtime retains a bounded conversation history for the current session and reports provider token usage. Network calls have a 30-second timeout and one bounded retry for transient errors. Provider response bodies are bounded before being included in user-facing errors.
 
 ## Python execution boundary
 
@@ -74,7 +77,7 @@ Before enough learner evidence exists, the forecast uses the broad curriculum ra
 
 1. Keep the existing WZD command working during the transition.
 2. Persist the new learner schema and add schema migrations.
-3. implement model profiles without storing raw secrets in learner state.
+3. Implement model profiles without storing raw secrets in learner state.
 4. Add an isolated Python workspace/runner and test protocol.
 5. Build the terminal adapter and first complete beginner module.
 6. Expand the ten gates into a full curriculum and rubrics.

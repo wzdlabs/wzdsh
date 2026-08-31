@@ -8,7 +8,7 @@ The tutor combines a structured 0–100 curriculum, progressive hints, real Pyth
 
 ## Status
 
-WZD Python Tutor is in active development. The reusable tutor engine, learner-facing CLI foundation, and public product site are implemented. The agentic model connection and complete lesson catalog are the next development slice.
+WZD Python Tutor is in active development. The reusable tutor engine, learner-facing CLI, OpenRouter/OpenAI model connection, starter lesson, local Python execution, and public product site are implemented. The complete lesson and assessment catalog remains in development.
 
 The previous business-agent implementation has been removed from the public product tree. The tutor CLI is now the package entrypoint.
 
@@ -18,19 +18,35 @@ The previous business-agent implementation has been removed from the public prod
 - Ten gated career stages from beginner to job-ready
 - Learner profiles, competency state, assessment evidence, and active-time tracking
 - Adaptive remaining-hour and calendar forecasts
-- Local, bring-your-own-key, custom endpoint, and future managed model profiles
-- Secret references that keep raw API keys out of learner state
+- OpenRouter, OpenAI, custom endpoint, and future managed model profiles
+- macOS Keychain and environment-variable credentials that keep raw API keys out of WZD configuration and learner state
+- Multi-turn agentic tutoring with progressive hints and session token usage
+- A WZD blue/gray terminal theme with `NO_COLOR` support
 - A process-limited local Python runner with disposable workspaces
 - A desktop-ready boundary that can later power a Tauri application
 - A Vercel-hosted product site at [wzd.sh](https://wzd.sh)
 
 ## Run the tutor
 
-Once the package is published, start the tutor without installing it globally:
+Connect a model, then start the tutor without installing it globally:
 
 ```bash
+bunx wzdsh models add
 bunx wzdsh python
 ```
+
+The setup wizard defaults to OpenRouter. It stores the key in macOS Keychain, tests the endpoint without generating model output, and selects the profile. OpenRouter model slugs can be changed at any time:
+
+```bash
+bunx wzdsh models add openrouter --model openrouter/free
+bunx wzdsh models list
+bunx wzdsh models use openrouter
+bunx wzdsh models update openrouter --model <provider/model-slug>
+bunx wzdsh models key openrouter
+bunx wzdsh models test
+```
+
+Use `--key-env OPENROUTER_API_KEY` if you prefer an environment variable. Never pass an API key as a command-line argument.
 
 To run the current source checkout:
 
@@ -45,7 +61,9 @@ Optional onboarding values can be passed directly:
 bunx wzdsh python --name "Prince" --hours 10
 ```
 
-Progress is stored in `~/.wzd/learners` so it follows the learner across project folders. The current CLI supports progress tracking and assessment gates; live AI tutoring is not connected yet.
+Progress is stored in `~/.wzd/learners` so it follows the learner across project folders. Model configuration is stored separately in `~/.wzd/models.json`, with credential references instead of raw keys.
+
+Inside a learning session, normal text goes to the tutor. Use `/lesson`, `/run`, `/hint`, `/model`, `/usage`, `/progress`, `/help`, and `/quit` for structured actions. The first starter lesson is available now; the full curriculum and automated gate assessments are not complete yet.
 
 ## The 0–100 path
 
@@ -98,12 +116,12 @@ bun run typecheck
 bun test
 ```
 
-The current implementation has automated coverage for learner initialization, gated progression, skip prevention, adaptive forecasts, file persistence, secret-safe model profiles, and Python runner limits.
+The current implementation has automated coverage for learner initialization, gated progression, skip prevention, adaptive forecasts, file persistence, secret-safe model profiles, OpenRouter/OpenAI request formats, multi-turn context, token usage, terminal colors, CLI model setup, and Python runner limits.
 
 ## Next
 
-1. Connect model profiles to the agentic tutor.
-2. Expand each career stage into lessons, exercises, projects, and rubrics.
-3. Add secure commercial entitlements.
-4. Build progress synchronization for `learn.wzd.sh`.
+1. Expand each career stage into lessons, exercises, projects, and automated rubrics.
+2. Add model budgets and secure commercial entitlements.
+3. Build progress synchronization for `learn.wzd.sh`.
+4. Add local-model and additional provider adapters.
 5. Reuse the protocol in a Tauri desktop shell.

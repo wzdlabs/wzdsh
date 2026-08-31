@@ -16,7 +16,11 @@ export interface TutorAgent {
     learner: Learner;
     content: string;
     competencyId: string | null;
-  }): Promise<{ content: string; suggestedActions?: string[] }>;
+  }): Promise<{
+    content: string;
+    suggestedActions?: string[];
+    usage?: { inputTokens: number; outputTokens: number; totalTokens: number };
+  }>;
 }
 
 export interface PythonRunner {
