@@ -1,6 +1,10 @@
+#!/usr/bin/env bun
+
+import { homedir } from "node:os";
 import { join } from "node:path";
 import { createInterface } from "node:readline/promises";
-import { stdin as input, stdout as output } from "node:process";
+import { stdin as input, stdout as output, stderr } from "node:process";
+import packageMetadata from "../../package.json" with { type: "json" };
 import {
   FileLearnerRepository,
   TutorEngine,
@@ -8,7 +12,12 @@ import {
   type TutorEventSink,
 } from "../../packages/tutor-core/src";
 
-const learnerRoot = join(process.cwd(), ".wzd", "learners");
+const wzdRoot = process.env.WZD_HOME?.trim() || join(homedir(), ".wzd");
+const learnerRoot = join(wzdRoot, "learners");
+
+const rootHelp = `WZD — tools for learning and building\n\nUsage:\n  wzdsh <command>\n\nCommands:\n  python    Start the guided Python tutor\n  help      Show this help\n  version   Show the installed version\n\nRun \"wzdsh python --help\" for Python tutor options.\n`;
+
+const pythonHelp = `WZD Learn — Python Tutor\n\nUsage:\n  wzdsh python [options]\n\nOptions:\n  --name <name>          Learner display name\n  --hours <number>       Available study hours per week\n  --learner-id <id>      Resume a specific learner profile\n  --help                 Show this help\n\nLearner progress is saved under ${learnerRoot}.\n`;
 
 class TerminalEventSink implements TutorEventSink {
   emit(event: TutorEvent): void {
@@ -66,13 +75,17 @@ function activeCompetencyId(learner: Awaited<ReturnType<FileLearnerRepository["l
   return learner?.competencies.find((item) => item.status === "learning" || item.status === "available")?.competencyId;
 }
 
-async function main(): Promise<void> {
+async function runPythonTutor(): Promise<void> {
   const readline = createInterface({ input, output });
   const events = new TerminalEventSink();
   const repository = new FileLearnerRepository(learnerRoot);
   const engine = new TutorEngine({ repository, events });
   const displayName = argument("--name") ?? ((await readline.question("What should I call you? ")) || "Learner");
   const weeklyHours = Number(argument("--hours") ?? ((await readline.question("How many hours can you study each week? [10] ")) || "10"));
+  if (!Number.isFinite(weeklyHours) || weeklyHours <= 0 || weeklyHours > 168) {
+    readline.close();
+    throw new Error("Study hours must be a number between 0 and 168.");
+  }
   const learnerId = argument("--learner-id") ?? learnerIdFor(displayName);
   const commandId = () => `cli-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 
@@ -120,4 +133,36 @@ async function main(): Promise<void> {
   readline.close();
 }
 
-await main();
+async function main(): Promise<void> {
+  const command = process.argv[2];
+
+  if (!command || command === "help" || command === "--help" || command === "-h") {
+    output.write(rootHelp);
+    return;
+  }
+
+  if (command === "version" || command === "--version" || command === "-v") {
+    output.write(`${packageMetadata.version}\n`);
+    return;
+  }
+
+  if (command === "python") {
+    if (process.argv.includes("--help") || process.argv.includes("-h")) {
+      output.write(pythonHelp);
+      return;
+    }
+    await runPythonTutor();
+    return;
+  }
+
+  stderr.write(`Unknown command: ${command}\n\n${rootHelp}`);
+  process.exitCode = 1;
+}
+
+try {
+  await main();
+} catch (error) {
+  const message = error instanceof Error ? error.message : String(error);
+  stderr.write(`WZD could not start: ${message}\n`);
+  process.exitCode = 1;
+}

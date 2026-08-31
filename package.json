@@ -4,22 +4,47 @@
   "description": "A guided terminal tutor from Python beginner to job-ready backend developer.",
   "type": "module",
   "bin": {
-    "wzd": "./apps/cli/index.ts"
+    "wzdsh": "./dist/cli.js",
+    "wzd": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "license": "UNLICENSED",
+  "homepage": "https://learn.wzd.sh",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/wzdlabs/wzdsh.git"
+  },
+  "bugs": {
+    "url": "https://github.com/wzdlabs/wzdsh/issues"
+  },
+  "keywords": [
+    "python",
+    "tutor",
+    "education",
+    "cli",
+    "learning"
+  ],
+  "engines": {
+    "bun": ">=1.2.0"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "scripts": {
-    "start": "bun apps/cli/index.ts",
-    "dev": "bun --watch apps/cli/index.ts",
+    "start": "bun apps/cli/index.ts python",
+    "dev": "bun --watch apps/cli/index.ts python",
+    "build": "bun build apps/cli/index.ts --target=bun --outfile dist/cli.js",
+    "check": "bun run typecheck && bun test",
     "typecheck": "tsc --noEmit",
-    "test": "bun test"
-  },
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.100.1",
-    "chalk": "latest",
-    "openai": "latest",
-    "zod": "latest"
+    "test": "bun test",
+    "prepack": "bun run check && bun run build"
   },
   "devDependencies": {
     "bun-types": "latest",
-    "typescript": "latest"
+    "typescript": "latest",
+    "zod": "latest"
   }
 }

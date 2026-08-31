@@ -5,6 +5,7 @@
     "moduleResolution": "bundler",
     "strict": true,
     "types": ["bun-types"],
+    "resolveJsonModule": true,
     "allowImportingTsExtensions": true,
     "noEmit": true
   },

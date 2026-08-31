@@ -4,11 +4,11 @@ WZD is a guided terminal tutor designed to take a total beginner from their firs
 
 The tutor combines a structured 0–100 curriculum, progressive hints, real Python execution, evidence-based assessment gates, adaptive completion forecasts, and user-selectable AI models.
 
-[Visit wzd.sh](https://wzd.sh) · [Read the architecture](docs/tutor-architecture.md)
+[Visit WZD Learn](https://learn.wzd.sh) · [Read the architecture](docs/tutor-architecture.md)
 
 ## Status
 
-WZD Python Tutor is in active development. The reusable tutor engine and public product site are implemented; the learner-facing CLI and complete lesson catalog are the next development slice.
+WZD Python Tutor is in active development. The reusable tutor engine, learner-facing CLI foundation, and public product site are implemented. The agentic model connection and complete lesson catalog are the next development slice.
 
 The previous business-agent implementation has been removed from the public product tree. The tutor CLI is now the package entrypoint.
 
@@ -23,6 +23,29 @@ The previous business-agent implementation has been removed from the public prod
 - A process-limited local Python runner with disposable workspaces
 - A desktop-ready boundary that can later power a Tauri application
 - A Vercel-hosted product site at [wzd.sh](https://wzd.sh)
+
+## Run the tutor
+
+Once the package is published, start the tutor without installing it globally:
+
+```bash
+bunx wzdsh python
+```
+
+To run the current source checkout:
+
+```bash
+bun install
+bun run start
+```
+
+Optional onboarding values can be passed directly:
+
+```bash
+bunx wzdsh python --name "Prince" --hours 10
+```
+
+Progress is stored in `~/.wzd/learners` so it follows the learner across project folders. The current CLI supports progress tracking and assessment gates; live AI tutoring is not connected yet.
 
 ## The 0–100 path
 
@@ -79,8 +102,8 @@ The current implementation has automated coverage for learner initialization, ga
 
 ## Next
 
-1. Build the learner-zero CLI onboarding experience.
-2. Connect model profiles to the agentic tutor.
-3. Expand each career stage into lessons, exercises, projects, and rubrics.
-4. Add secure packaged distribution and commercial entitlements.
+1. Connect model profiles to the agentic tutor.
+2. Expand each career stage into lessons, exercises, projects, and rubrics.
+3. Add secure commercial entitlements.
+4. Build progress synchronization for `learn.wzd.sh`.
 5. Reuse the protocol in a Tauri desktop shell.
