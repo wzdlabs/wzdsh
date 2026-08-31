@@ -36,11 +36,11 @@
   "scripts": {
     "start": "bun apps/cli/index.ts python",
     "dev": "bun --watch apps/cli/index.ts python",
-    "build": "bun build apps/cli/index.ts --target=bun --outfile dist/cli.js",
+    "build:cli": "bun build apps/cli/index.ts --target=bun --outfile dist/cli.js",
     "check": "bun run typecheck && bun test",
     "typecheck": "tsc --noEmit",
     "test": "bun test",
-    "prepack": "bun run check && bun run build"
+    "prepack": "bun run check && bun run build:cli"
   },
   "devDependencies": {
     "bun-types": "latest",
