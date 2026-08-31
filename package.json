@@ -1,6 +1,7 @@
 {
   "name": "wzdsh",
   "version": "0.1.0",
+  "description": "A guided terminal tutor from Python beginner to job-ready backend developer.",
   "type": "module",
   "bin": {
     "wzd": "./wzd.ts"

@@ -1,102 +1,86 @@
-# WZD
+# WZD — Python Tutor
 
-WZD is a terminal business agent for turning raw ideas into revenue through gated validation, offer building, outreach, metrics, and review.
+WZD is a guided terminal tutor designed to take a total beginner from their first command to junior Python backend developer readiness.
 
-It runs locally with Bun, stores business state in files, and supports OpenAI, Anthropic, and OpenRouter for streamed agent responses.
+The tutor combines a structured 0–100 curriculum, progressive hints, real Python execution, evidence-based assessment gates, adaptive completion forecasts, and user-selectable AI models.
 
-## Requirements
+[Visit wzd.sh](https://wzd.sh) · [Read the architecture](docs/tutor-architecture.md)
 
-- macOS, Linux, or a VM with a terminal
-- Git
-- Bun
-- At least one API key: OpenAI, Anthropic, or OpenRouter
+## Status
 
-## Install Bun
+WZD Python Tutor is in active development. The reusable tutor engine and public product site are implemented; the learner-facing CLI and complete lesson catalog are the next development slice.
 
-```bash
-curl -fsSL https://bun.sh/install | bash
-source ~/.zshrc
-```
+The previous WZD business-agent code remains in the repository temporarily while the CLI is migrated. It is not the product described by the current website.
 
-## Clone And Install
+## What is implemented
 
-```bash
-git clone https://github.com/wzdlabs/wzdsh.git
-cd wzdsh
-bun install
-```
+- A UI-independent tutor engine with validated commands and events
+- Ten gated career stages from beginner to job-ready
+- Learner profiles, competency state, assessment evidence, and active-time tracking
+- Adaptive remaining-hour and calendar forecasts
+- Local, bring-your-own-key, custom endpoint, and future managed model profiles
+- Secret references that keep raw API keys out of learner state
+- A process-limited local Python runner with disposable workspaces
+- A desktop-ready boundary that can later power a Tauri application
+- A Vercel-hosted product site at [wzd.sh](https://wzd.sh)
 
-## Configure API Keys
+## The 0–100 path
 
-WZD reads API keys from environment variables or from a `.env` file in the project root.
+| Level | Competency | Estimated active hours |
+| --- | --- | ---: |
+| 0–10 | Computer and terminal foundations | 20–40 |
+| 10–20 | Core Python | 60–100 |
+| 20–30 | Problem solving and debugging | 70–110 |
+| 30–40 | Git and developer tooling | 60–100 |
+| 40–50 | Professional Python and testing | 80–130 |
+| 50–60 | SQL, HTTP, and API foundations | 80–130 |
+| 60–70 | Python backend development | 110–170 |
+| 70–80 | Production systems | 90–140 |
+| 80–90 | Engineering maturity | 90–150 |
+| 90–100 | Portfolio and job readiness | 100–180 |
 
-```bash
-# .env
-OPENAI_API_KEY=your_openai_key
-ANTHROPIC_API_KEY=your_anthropic_key
-OPENROUTER_API_KEY=your_openrouter_key
-```
+Time does not unlock a stage. Learners advance by passing assessments and producing evidence that the prerequisite competencies are mastered.
 
-You can also set keys interactively with `/model` inside WZD — they are saved to `.env` automatically.
-
-Do not commit `.env` to this repo (it is gitignored).
-
-## Run WZD
-
-```bash
-bun run start
-```
-
-The first run creates a business under `businesses/` and starts the intake flow.
-
-## Commands
+## Architecture
 
 ```text
-/help                    Show available commands
-/new                     Create a new business
-/switch                  Switch active business
-/start                   Start or return to intake
-/validate                Work on demand validation
-/offer                   Work on the model and offer
-/revenue                 Move into revenue work
-/metrics                 Show revenue metrics
-/tasks                   Show current tasks
-/decisions               Show logged decisions
-/tokens                  Show session token usage
-/model                   Interactive model selector
-/model provider:model    Set model directly (e.g. anthropic:claude-opus-4-5)
-/signin                  Set local WZD identity
-/signout                 Clear local WZD identity
-/whoami                  Show local WZD identity
-/close                   Close the session and log what changed
+CLI adapter now                 Tauri adapter later
+      |                                |
+      +-------- structured commands ---+
+                       |
+                 tutor-core
+            curriculum and gates
+          learner state and evidence
+             forecast calculation
+              tutor/model ports
+              Python runner port
+                       |
+      +--------- structured events ----+
+      |                                |
+terminal renderer               desktop renderer
 ```
 
-### Supported providers
-
-| Provider | Format | Example |
-|----------|--------|---------|
-| OpenAI | `openai:model` | `openai:gpt-4o` |
-| Anthropic | `anthropic:model` | `anthropic:claude-opus-4-5` |
-| OpenRouter | `openrouter:model` | `openrouter:meta-llama/llama-3.3-70b-instruct` |
-
-Model selection persists across sessions.
+The tutor core does not read terminal input, write terminal output, or depend on a WebView. This allows the same learning engine to power the terminal product now and a desktop application later.
 
 ## Development
 
+Requirements:
+
+- Bun
+- Python 3
+
 ```bash
+bun install
 bun run typecheck
 bun test
-bun run dev
 ```
 
-## Data Storage
+The current implementation has automated coverage for learner initialization, gated progression, skip prevention, adaptive forecasts, file persistence, secret-safe model profiles, and Python runner limits.
 
-```text
-businesses/[slug]/venture.json
-businesses/[slug]/decisions.md
-businesses/[slug]/tasks.md
-businesses/[slug]/metrics.md
-businesses/[slug]/artifacts/
-```
+## Next
 
-Runtime auth, `.env`, and `.wzdconfig.json` are gitignored.
+1. Build the learner-zero CLI onboarding experience.
+2. Connect model profiles to the agentic tutor.
+3. Expand each career stage into lessons, exercises, projects, and rubrics.
+4. Add secure packaged distribution and commercial entitlements.
+5. Reuse the protocol in a Tauri desktop shell.
