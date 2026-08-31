@@ -7,7 +7,7 @@ import {
   MemorySecretStore,
   OpenAICompatibleTutorAgent,
 } from "../packages/tutor-runtime/src";
-import { createTerminalTheme } from "../apps/cli/theme";
+import { createTerminalTheme, renderTutorContent } from "../apps/cli/theme";
 
 const learner: Learner = {
   schemaVersion: 1,
@@ -121,6 +121,20 @@ test("terminal theme matches the website palette and respects NO_COLOR", () => {
   const plain = createTerminalTheme({ isTTY: true }, { NO_COLOR: "1" });
 
   expect(colored.accent("you ›")).toBe("\u001b[38;2;111;143;232myou ›\u001b[0m");
+  expect(colored.code("print('hello')")).toBe("\u001b[38;2;111;143;232mprint('hello')\u001b[0m");
   expect(colored.soft("tutor ›")).toBe("\u001b[38;2;163;163;163mtutor ›\u001b[0m");
   expect(plain.accent("you ›")).toBe("you ›");
+});
+
+test("tutor prose stays soft while inline and fenced code use the WZD accent", () => {
+  const theme = createTerminalTheme({ isTTY: false }, { FORCE_COLOR: "1" });
+  const rendered = renderTutorContent(
+    "Use `print()` like this:\n```python\nprint('Hello')\n```\nThen run it.",
+    theme,
+  );
+
+  expect(rendered).toContain("\u001b[38;2;163;163;163mUse \u001b[0m");
+  expect(rendered).toContain("\u001b[38;2;111;143;232mprint()\u001b[0m");
+  expect(rendered).toContain("\u001b[38;2;111;143;232mprint('Hello')\u001b[0m");
+  expect(rendered).not.toContain("```python");
 });

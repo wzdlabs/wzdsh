@@ -22,6 +22,7 @@ The previous business-agent implementation has been removed from the public prod
 - macOS Keychain and environment-variable credentials that keep raw API keys out of WZD configuration and learner state
 - Multi-turn agentic tutoring with progressive hints and session token usage
 - A WZD blue/gray terminal theme with `NO_COLOR` support
+- WZD-blue inline and fenced code that stays visually distinct from tutor prose
 - A process-limited local Python runner with disposable workspaces
 - A desktop-ready boundary that can later power a Tauri application
 - A Vercel-hosted product site at [wzd.sh](https://wzd.sh)

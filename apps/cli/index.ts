@@ -19,7 +19,7 @@ import {
   PlatformSecretStore,
 } from "../../packages/tutor-runtime/src";
 import { runModelsCommand } from "./model-commands";
-import { createTerminalTheme, type TerminalTheme } from "./theme";
+import { createTerminalTheme, renderTutorContent, type TerminalTheme } from "./theme";
 
 const wzdRoot = process.env.WZD_HOME?.trim() || join(homedir(), ".wzd");
 const learnerRoot = join(wzdRoot, "learners");
@@ -75,7 +75,7 @@ class TerminalEventSink implements TutorEventSink {
     }
     if (event.type === "tutor_message") {
       if (event.usage) this.usage.add(event.usage);
-      output.write(`${this.terminalTheme.soft("tutor ›")} ${this.terminalTheme.soft(event.content)}\n`);
+      output.write(`${this.terminalTheme.soft("tutor ›")} ${renderTutorContent(event.content, this.terminalTheme)}\n`);
       for (const action of event.suggestedActions) {
         output.write(`        ${this.terminalTheme.faint(action)}\n`);
       }
@@ -124,7 +124,7 @@ function lesson(profile: ModelProfile | undefined): string {
     theme.primary("Meet your Python workspace"),
     theme.soft("Goal: understand the prompt, run a small Python statement, and use an error as evidence."),
     "",
-    `${theme.faint("try")} ${theme.primary('/run print("Hello, Python!")')}`,
+    `${theme.faint("try")} ${theme.code('/run print("Hello, Python!")')}`,
     `${theme.faint("then")} Ask the tutor what each part of that statement means.`,
   ].join("\n");
 }
@@ -155,7 +155,7 @@ async function runPythonTutor(): Promise<void> {
 
   await engine.dispatch({ type: "start_session", commandId: commandId(), learnerId, displayName, weeklyHours });
   output.write(`\n${lesson(profile)}\n`);
-  if (!profile) output.write(`\n${theme.faint("Connect an agent with")} ${theme.primary("bunx wzdsh models add")}\n`);
+  if (!profile) output.write(`\n${theme.faint("Connect an agent with")} ${theme.code("bunx wzdsh models add")}\n`);
   output.write(`\n${theme.faint("Type /help for commands. Normal text goes to your tutor.")}\n`);
 
   for (;;) {

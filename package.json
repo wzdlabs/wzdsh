@@ -1,6 +1,6 @@
 {
   "name": "wzdsh",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "description": "An agentic terminal tutor from Python beginner to job-ready backend developer.",
   "type": "module",
   "bin": {
