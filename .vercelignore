@@ -1,0 +1,14 @@
+agents
+businesses
+docs
+packages
+prompts
+state
+tests
+types
+utils
+*.ts
+README.md
+bun.lock
+bunfig.toml
+node_modules
