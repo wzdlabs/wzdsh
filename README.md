@@ -10,7 +10,7 @@ The tutor combines a structured 0–100 curriculum, progressive hints, real Pyth
 
 WZD Python Tutor is in active development. The reusable tutor engine and public product site are implemented; the learner-facing CLI and complete lesson catalog are the next development slice.
 
-The previous WZD business-agent code remains in the repository temporarily while the CLI is migrated. It is not the product described by the current website.
+The previous business-agent implementation has been removed from the public product tree. The tutor CLI is now the package entrypoint.
 
 ## What is implemented
 

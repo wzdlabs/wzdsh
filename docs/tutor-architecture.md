@@ -1,6 +1,6 @@
 # Python Tutor Architecture
 
-This document records the first implementation boundary for converting WZD into a guided Python tutor. The existing business agent remains available while the tutor is developed on a separate branch.
+This document records the implementation boundary for WZD as a guided Python tutor.
 
 ## Product target
 

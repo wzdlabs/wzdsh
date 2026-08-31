@@ -4,7 +4,6 @@ tmp
 .DS_Store
 .env
 .wzdconfig.json
-businesses/.auth.json
-businesses/*
-!businesses/.gitkeep
+.wzd/
+.python-tutor/
 .vercel

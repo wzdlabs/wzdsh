@@ -4,11 +4,11 @@
   "description": "A guided terminal tutor from Python beginner to job-ready backend developer.",
   "type": "module",
   "bin": {
-    "wzd": "./wzd.ts"
+    "wzd": "./apps/cli/index.ts"
   },
   "scripts": {
-    "start": "bun wzd.ts",
-    "dev": "bun --watch wzd.ts",
+    "start": "bun apps/cli/index.ts",
+    "dev": "bun --watch apps/cli/index.ts",
     "typecheck": "tsc --noEmit",
     "test": "bun test"
   },
